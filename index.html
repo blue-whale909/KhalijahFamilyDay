@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khalijah's Family Day 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#FF6B6B; --orange:#FFA94D; --yellow:#FFD43B; --lime:#94D82D; --teal:#20C997;
+    --cyan:#22B8CF; --blue:#4DABF7; --indigo:#748FFC; --purple:#B197FC; --pink:#F783AC;
+    --ink:#2b2540; --ink-soft:#6b6480; --card:#ffffff; --card-line:#eee6f7;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background:linear-gradient(120deg,#ffe1e1,#fff2d6,#fdffd6,#e2ffe0,#d8fff5,#dcf1ff,#e6e3ff,#f7dcff,#ffd9ec,#ffe1e1);
+    background-size:400% 400%;
+    animation:bgflow 30s ease infinite;
+  }
+  @keyframes bgflow{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  h1,h2,h3,.brand,.stat-num,.winner-name,.shuffle-name{font-family:'Fredoka',sans-serif;}
+  #app{max-width:1200px;margin:0 auto;padding:18px 18px 60px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:14px;margin-bottom:18px;
+  }
+  .brand-row{display:flex;align-items:center;gap:12px;}
+  .brand-badge{
+    font-size:34px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.1));
+  }
+  .brand{font-size:clamp(20px,3vw,30px);font-weight:700;margin:0;}
+  .brand small{display:block;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;color:var(--ink-soft);letter-spacing:.5px;text-transform:uppercase;}
+  .headline-count{
+    background:var(--card);border:2px solid var(--card-line);border-radius:999px;
+    padding:8px 18px;font-weight:800;box-shadow:0 4px 14px rgba(120,80,180,.12);
+    display:flex;align-items:center;gap:8px;font-size:15px;
+  }
+  .headline-count b{font-size:18px;color:#7048e8;}
+
+  nav.tabs{
+    display:flex;gap:8px;background:rgba(255,255,255,.6);backdrop-filter:blur(4px);
+    padding:6px;border-radius:16px;border:2px solid var(--card-line);
+    width:fit-content;margin:0 auto 22px;
+  }
+  nav.tabs button{
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;
+    padding:10px 20px;border-radius:12px;border:none;background:transparent;
+    color:var(--ink-soft);cursor:pointer;transition:all .15s;
+  }
+  nav.tabs button.active{background:#7048e8;color:#fff;box-shadow:0 4px 12px rgba(112,72,232,.4);}
+  nav.tabs button:not(.active):hover{background:rgba(112,72,232,.08);color:#7048e8;}
+
+  .view{display:none;}
+  .view.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* ---------- shared cards ---------- */
+  .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--card-line);
+    box-shadow:0 6px 20px rgba(120,80,180,.08);padding:18px;}
+  .group-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none;}
+
+  /* ---------- check-in view ---------- */
+  .checkin-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;}
+  .checkin-toolbar input[type="text"]{
+    flex:1;min-width:220px;padding:12px 16px;border-radius:12px;border:2px solid var(--card-line);
+    font-family:'Nunito';font-size:15px;font-weight:600;background:#fff;
+  }
+  .checkin-toolbar input[type="text"]:focus{outline:none;border-color:#7048e8;}
+  .seg{display:flex;background:#fff;border:2px solid var(--card-line);border-radius:12px;overflow:hidden;}
+  .seg button{border:none;background:transparent;padding:10px 14px;font-family:'Nunito';font-weight:700;font-size:13px;cursor:pointer;color:var(--ink-soft);}
+  .seg button.active{background:#7048e8;color:#fff;}
+
+  .group-block{margin-bottom:20px;}
+  .group-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .group-head h3{margin:0;font-size:18px;font-weight:600;}
+  .group-progress-pill{
+    margin-left:auto;font-size:13px;font-weight:800;background:#f4f1fc;color:#5f3dc4;
+    padding:4px 12px;border-radius:999px;
+  }
+  .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .chip{
+    border:2px solid var(--card-line);background:#fff;border-radius:14px;padding:10px 12px;
+    cursor:pointer;text-align:left;transition:all .12s;position:relative;
+  }
+  .chip:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(120,80,180,.15);}
+  .chip .nm{font-weight:800;font-size:14px;display:block;}
+  .chip .meta{font-size:11px;color:var(--ink-soft);font-weight:700;}
+  .chip.done{background:linear-gradient(135deg,#e9fbef,#f2fff5);border-color:#69db7c;}
+  .chip.done .nm::after{content:" ✅";}
+  .chip .noeligible{font-size:10px;color:#adb5bd;}
+
+  /* ---------- dashboard ---------- */
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px;}
+  .stat-card{background:#fff;border-radius:16px;padding:18px;border:1px solid var(--card-line);box-shadow:0 6px 20px rgba(120,80,180,.08);text-align:center;}
+  .stat-num{font-size:34px;font-weight:700;color:#7048e8;}
+  .stat-label{font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;}
+  .dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+  .dash-card{padding:16px 18px;}
+  .dash-card .top-line{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .dash-card .top-line b{font-size:15px;}
+  .dash-card .count{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;}
+  .bar-track{height:12px;border-radius:999px;background:#f1eefb;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:999px;transition:width .4s ease;}
+
+  /* ---------- lucky draw ---------- */
+  .draw-wrap{display:grid;grid-template-columns:2fr 1fr;gap:18px;}
+  @media (max-width:820px){.draw-wrap{grid-template-columns:1fr;}}
+  .stage{
+    background:linear-gradient(135deg,#ff8a8a,#ffbf69,#ffe66d,#a0e97a,#5fd6c4,#5fb8f0,#8f8fff,#d18fff,#ff8fd6);
+    background-size:300% 300%;
+    animation:stageflow 12s ease infinite;
+    border-radius:24px;padding:34px 20px;text-align:center;color:#fff;position:relative;
+    min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  @keyframes stageflow{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  #stage:fullscreen{min-height:100vh;border-radius:0;padding:40px;}
+  #stage:-webkit-full-screen{min-height:100vh;border-radius:0;padding:40px;}
+  .stage-label{font-size:clamp(16px,2vw,26px);letter-spacing:3px;text-transform:uppercase;color:#fff;font-weight:800;margin-bottom:16px;
+    text-shadow:0 2px 6px rgba(0,0,0,.35);}
+  .shuffle-name{
+    font-size:clamp(48px,11vw,150px);font-weight:700;color:#fff;
+    -webkit-text-stroke:2px rgba(0,0,0,.25);
+    text-shadow:0 4px 0 rgba(0,0,0,.2), 0 0 30px rgba(255,255,255,.6);min-height:1.2em;
+    line-height:1.1;
+  }
+  .shuffle-sub{font-size:clamp(20px,3vw,36px);color:#fff;font-weight:800;margin-top:10px;
+    text-shadow:0 2px 6px rgba(0,0,0,.35);}
+  .draw-badge{
+    display:inline-block;background:#3d2b00;color:#ffd43b;font-weight:800;font-size:clamp(14px,1.6vw,20px);
+    padding:8px 22px;border-radius:999px;margin-bottom:18px;letter-spacing:1px;
+  }
+  .winner-name{font-size:clamp(56px,13vw,180px);font-weight:700;color:#fff;line-height:1.1;
+    -webkit-text-stroke:3px rgba(0,0,0,.3);
+    text-shadow:0 5px 0 rgba(0,0,0,.25), 0 0 40px rgba(255,255,255,.7);}
+  .winner-group{font-size:clamp(22px,3.6vw,44px);font-weight:800;color:#3d2b00;margin-top:14px;
+    background:#ffe066;display:inline-block;padding:6px 22px;border-radius:999px;}
+  .draw-btn{
+    font-family:'Fredoka';font-size:20px;font-weight:600;color:#fff;
+    background:linear-gradient(135deg,#ff6b6b,#f06595,#cc5de8,#7048e8);
+    border:none;border-radius:16px;padding:16px 40px;cursor:pointer;margin-top:22px;
+    box-shadow:0 10px 26px rgba(112,72,232,.45);transition:transform .12s;
+  }
+  .draw-btn:hover{transform:translateY(-2px) scale(1.02);}
+  .draw-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+  .draw-controls{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+  .toggle-row{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;color:var(--ink);}
+  .toggle-row input{width:18px;height:18px;}
+  .side-panel .card{margin-bottom:14px;}
+  .pool-note{font-size:13px;color:var(--ink-soft);font-weight:700;}
+  .winners-list{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+  .winner-row{
+    display:flex;align-items:center;gap:10px;background:#faf7ff;border:1px solid var(--card-line);
+    border-radius:12px;padding:8px 12px;
+  }
+  .winner-row .num{
+    background:#7048e8;color:#fff;font-weight:800;font-size:12px;
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;
+  }
+  .winner-row .wname{font-weight:800;font-size:14px;}
+  .winner-row .wgroup{font-size:11px;color:var(--ink-soft);font-weight:700;}
+  .small-btn{
+    font-family:'Nunito';font-weight:800;font-size:13px;border-radius:10px;border:2px solid var(--card-line);
+    background:#fff;padding:8px 14px;cursor:pointer;color:var(--ink);
+  }
+  .small-btn:hover{border-color:#7048e8;color:#7048e8;}
+  .fullscreen-btn{position:absolute;top:14px;right:14px;}
+
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+
+  footer{text-align:center;margin-top:30px;font-size:12px;color:var(--ink-soft);font-weight:700;}
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand-row">
+      <div class="brand-badge">🎉</div>
+      <h1 class="brand">Khalijah's Family Day 2026<small>Family gathering event system</small></h1>
+    </div>
+    <div class="headline-count">✅ Checked in <b id="headCount">0 / 0</b></div>
+  </div>
+
+  <nav class="tabs">
+    <button data-view="checkin" class="active">🖊️ Check-In</button>
+    <button data-view="dashboard">📊 Dashboard</button>
+    <button data-view="luckydraw">🎁 Lucky Draw</button>
+  </nav>
+
+  <!-- CHECK-IN VIEW -->
+  <section id="checkin" class="view active">
+    <div class="checkin-toolbar">
+      <input type="text" id="searchBox" placeholder="🔍 Search name or family group...">
+      <div class="seg" id="filterSeg">
+        <button data-f="all" class="active">All</button>
+        <button data-f="in">Checked in</button>
+        <button data-f="out">Not yet</button>
+      </div>
+    </div>
+    <div id="checkinGroups"></div>
+  </section>
+
+  <!-- DASHBOARD VIEW -->
+  <section id="dashboard" class="view">
+    <div class="stat-row" id="statRow"></div>
+    <div class="dash-grid" id="dashGrid"></div>
+  </section>
+
+  <!-- LUCKY DRAW VIEW -->
+  <section id="luckydraw" class="view">
+    <div class="draw-wrap">
+      <div class="stage" id="stage">
+        <button class="small-btn fullscreen-btn" id="fsBtn">⛶ Present mode</button>
+        <div id="stageIdle">
+          <div class="stage-label">Lucky Draw · Age 18 &amp; above</div>
+          <div class="shuffle-name" style="font-size:clamp(28px,5vw,64px);-webkit-text-stroke:1.5px rgba(0,0,0,.2);">Ready when you are 🎊</div>
+          <div class="shuffle-sub" id="poolLine">Eligible pool: 0 guests</div>
+          <button class="draw-btn" id="drawBtn">🎲 Draw Now</button>
+        </div>
+        <div id="stageShuffle" style="display:none;">
+          <div class="stage-label">Drawing...</div>
+          <div class="shuffle-name" id="shuffleName">-</div>
+          <div class="shuffle-sub" id="shuffleGroup">&nbsp;</div>
+        </div>
+        <div id="stageWinner" style="display:none;">
+          <div class="draw-badge" id="drawNumBadge">DRAW #1</div>
+          <div class="winner-name" id="winnerName">-</div>
+          <div class="winner-group" id="winnerGroup">-</div>
+          <button class="draw-btn" id="drawAgainBtn">🎲 Draw Again</button>
+        </div>
+      </div>
+
+      <div class="side-panel">
+        <div class="card">
+          <div class="toggle-row">
+            <input type="checkbox" id="onlyCheckedIn" checked>
+            <label for="onlyCheckedIn">Only draw guests who checked in</label>
+          </div>
+          <div class="toggle-row">
+            <input type="checkbox" id="removeAfterWin" checked>
+            <label for="removeAfterWin">Remove winner from future draws</label>
+          </div>
+          <div class="toggle-row">
+            <input type="checkbox" id="soundOn" checked>
+            <label for="soundOn">Sound effects</label>
+          </div>
+          <p class="pool-note" id="poolNote" style="margin-top:10px;">Eligible = Lucky Draw column marked YES (age 18+).</p>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="margin:0;font-size:16px;">🏆 Winners</h3>
+            <button class="small-btn" id="resetWinnersBtn">Reset</button>
+          </div>
+          <div class="winners-list" id="winnersList"><p class="pool-note">No draws yet.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Khalijah's Family Day 2026 · built for one fabulous get-together 🌈</footer>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const RAW_GUESTS = [
+[1,"Paklong","Pak Long",75,"YES","cat 5 (36-99)"],
+[2,"Makngah","Mak Ngah",71,"YES","cat 5 (36-99)"],
+[3,"Anisah","Mak Ngah",45,"YES","cat 5 (36-99)"],
+[4,"Awie","Mak Ngah",42,"YES","cat 5 (36-99)"],
+[5,"Iman Sofea","Mak Ngah",14,"NO","cat 3 (11-15)"],
+[6,"Syuhada","Mak Ngah",14,"NO","cat 3 (11-15)"],
+[7,"Ammar","Mak Ngah",12,"NO","cat 3 (11-15)"],
+[8,"Sakinah","Mak Ngah",10,"NO","cat 2 (7-10)"],
+[9,"Jannah","Mak Ngah",6,"NO","cat 1 (1-6)"],
+[10,"Iman","Mak Ngah",4,"NO","cat 1 (1-6)"],
+[11,"Atikah","Mak Ngah",47,"YES","cat 5 (36-99)"],
+[12,"Zolkopli","Mak Ngah",47,"YES","cat 5 (36-99)"],
+[13,"Ain Nurshafiqah","Mak Ngah",22,"YES","cat 4 (16-35)"],
+[14,"Abdul Aziz","Mak Ngah",49,"YES","cat 5 (36-99)"],
+[15,"Azamuddin","Mak Ngah",31,"YES","cat 4 (16-35)"],
+[16,"Solehah","Mak Ngah",31,"YES","cat 4 (16-35)"],
+[17,"Umaira Muslihah","Mak Ngah",7,"NO","cat 2 (7-10)"],
+[18,"Atiah","Mak Ngah",39,"YES","cat 5 (36-99)"],
+[19,"Lan","Mak Ngah",39,"YES","cat 5 (36-99)"],
+[20,"Haziq","Mak Ngah",14,"NO","cat 3 (11-15)"],
+[21,"Sumaiyah","Mak Ngah",8,"NO","cat 2 (7-10)"],
+[22,"Abdullah","Mak Ngah",37,"YES","cat 5 (36-99)"],
+[23,"Aishah Md Desa","Mak Ngah",30,"YES","cat 4 (16-35)"],
+[24,"Aidan","Mak Ngah",8,"NO","cat 2 (7-10)"],
+[25,"Adawiyah","Mak Ngah",6,"NO","cat 1 (1-6)"],
+[26,"Adira","Mak Ngah",2,"NO","cat 1 (1-6)"],
+[27,"Muhammad","Mak Ngah",1,"NO","cat 1 (1-6)"],
+[28,"Adam","Mak Ngah",8,"NO","cat 2 (7-10)"],
+[29,"Azizah","Mak Ngah",35,"YES","cat 4 (16-35)"],
+[30,"Khairul","Mak Ngah",41,"YES","cat 5 (36-99)"],
+[31,"Rahimah","Mak Ngah",35,"YES","cat 4 (16-35)"],
+[32,"Rezqal","Mak Ngah",11,"NO","cat 3 (11-15)"],
+[33,"Khaira","Mak Ngah",7,"NO","cat 2 (7-10)"],
+[34,"Azizul","Mak Ngah",32,"YES","cat 4 (16-35)"],
+[35,"Srihandayani","Mak Ngah",32,"YES","cat 4 (16-35)"],
+[36,"Aisy","Mak Ngah",3,"NO","cat 1 (1-6)"],
+[37,"Ayyash","Mak Ngah",1,"NO","cat 1 (1-6)"],
+[38,"Adli","Pak Lang",39,"YES","cat 5 (36-99)"],
+[39,"Farah","Pak Lang",39,"YES","cat 5 (36-99)"],
+[40,"Hurun","Pak Lang",11,"NO","cat 3 (11-15)"],
+[41,"Uwais","Pak Lang",10,"NO","cat 2 (7-10)"],
+[42,"Zinnirah","Pak Lang",5,"NO","cat 1 (1-6)"],
+[43,"Anis","Pak Lang",35,"YES","cat 4 (16-35)"],
+[44,"Lah","Pak Lang",35,"YES","cat 4 (16-35)"],
+[45,"Mikail","Pak Lang",8,"NO","cat 2 (7-10)"],
+[46,"Anas","Pak Lang",33,"YES","cat 4 (16-35)"],
+[47,"Syafiqah","Pak Lang",33,"YES","cat 4 (16-35)"],
+[48,"Rumaisha","Pak Lang",6,"NO","cat 1 (1-6)"],
+[49,"Tasneem","Pak Lang",3,"NO","cat 1 (1-6)"],
+[50,"Azieman","Pak Lang",25,"YES","cat 4 (16-35)"],
+[51,"Makjang","Mak Jang",69,"YES","cat 5 (36-99)"],
+[52,"Zan","Mak Jang",50,"YES","cat 5 (36-99)"],
+[53,"Aziah","Mak Jang",47,"YES","cat 5 (36-99)"],
+[54,"Ahmad","Mak Jang",23,"YES","cat 4 (16-35)"],
+[55,"Jiha","Mak Jang",22,"YES","cat 4 (16-35)"],
+[56,"Wafi","Mak Jang",21,"YES","cat 4 (16-35)"],
+[57,"Nazifa","Mak Jang",17,"NO","cat 4 (16-35)"],
+[58,"Aina","Mak Jang",15,"NO","cat 3 (11-15)"],
+[59,"Din","Mak Jang",14,"NO","cat 3 (11-15)"],
+[60,"Syukri","Mak Jang",45,"YES","cat 5 (36-99)"],
+[61,"Munirah","Mak Jang",45,"YES","cat 5 (36-99)"],
+[62,"Huda","Mak Jang",11,"NO","cat 3 (11-15)"],
+[63,"Humaira","Mak Jang",10,"NO","cat 2 (7-10)"],
+[64,"Hafiya","Mak Jang",6,"NO","cat 1 (1-6)"],
+[65,"Sayukhi","Mak Ndak",66,"YES","cat 5 (36-99)"],
+[66,"Nooraini","Mak Ndak",66,"YES","cat 5 (36-99)"],
+[67,"Mimi","Mak Ndak",31,"YES","cat 4 (16-35)"],
+[68,"Mira","Mak Ndak",28,"YES","cat 4 (16-35)"],
+[69,"Arif","Mak Ndak",35,"YES","cat 4 (16-35)"],
+[70,"Paktam","Mak Tam",71,"YES","cat 5 (36-99)"],
+[71,"Maktam","Mak Tam",65,"YES","cat 5 (36-99)"],
+[72,"Husna","Mak Tam",42,"YES","cat 5 (36-99)"],
+[73,"Shahrul","Mak Tam",42,"YES","cat 5 (36-99)"],
+[74,"Hayfa","Mak Tam",13,"NO","cat 3 (11-15)"],
+[75,"Huda","Mak Tam",39,"YES","cat 5 (36-99)"],
+[76,"Akmal Khan","Mak Tam",39,"YES","cat 5 (36-99)"],
+[77,"Hanim","Mak Tam",35,"YES","cat 4 (16-35)"],
+[78,"Syazwan","Mak Tam",39,"YES","cat 5 (36-99)"],
+[79,"Adib","Mak Tam",31,"YES","cat 4 (16-35)"],
+[80,"Nisya","Mak Tam",26,"YES","cat 4 (16-35)"],
+[81,"Makteh","Mak Teh",64,"YES","cat 5 (36-99)"],
+[82,"Khairunisa","Mak Teh",34,"YES","cat 4 (16-35)"],
+[83,"Khaled","Mak Teh",34,"YES","cat 4 (16-35)"],
+[84,"Lily","Mak Teh",7,"NO","cat 2 (7-10)"],
+[85,"Luna","Mak Teh",3,"NO","cat 1 (1-6)"],
+[86,"Walid","Mak Teh",33,"YES","cat 4 (16-35)"],
+[87,"Hakim","Mak Teh",30,"YES","cat 4 (16-35)"],
+[88,"Nuar","Mak Teh",27,"YES","cat 4 (16-35)"],
+[89,"Alia","Mak Teh",28,"YES","cat 4 (16-35)"],
+[90,"Helena","Mak Teh",1,"NO","cat 1 (1-6)"],
+[91,"Ikhwan","Mak Teh",26,"YES","cat 4 (16-35)"],
+[92,"Mak Uda","Mak Uda",59,"YES","cat 5 (36-99)"],
+[93,"Pak Uda","Mak Uda",71,"YES","cat 5 (36-99)"],
+[94,"Ain Syazwani","Mak Uda",29,"YES","cat 4 (16-35)"],
+[95,"Dena","Cik Dah",29,"YES","cat 4 (16-35)"],
+[96,"Ikmal","Cik Dah",29,"YES","cat 4 (16-35)"],
+[97,"Anaqi","Cik Dah",3,"NO","cat 1 (1-6)"],
+[98,"Aisyah","Cik Dah",28,"YES","cat 4 (16-35)"],
+[99,"Cikmat","Cik Dah",58,"YES","cat 5 (36-99)"],
+[100,"Cikdah","Cik Dah",57,"YES","cat 5 (36-99)"],
+[101,"Fatimah","Cik Dah",25,"YES","cat 4 (16-35)"],
+[102,"Hasbur","Cik Dah",18,"YES","cat 4 (16-35)"],
+[103,"Pak Usu","Cu Ina",50,"YES","cat 5 (36-99)"],
+[104,"Cu","Cu Ina",54,"YES","cat 5 (36-99)"],
+[105,"Izzati","Cu Ina",29,"YES","cat 4 (16-35)"],
+[106,"Aisy","Cu Ina",3,"NO","cat 1 (1-6)"],
+[107,"Sofea","Cu Ina",25,"YES","cat 4 (16-35)"],
+[108,"Iesya","Cu Ina",23,"YES","cat 4 (16-35)"],
+[109,"Man","Cu Ina",22,"YES","cat 4 (16-35)"],
+[110,"Dhuha","Cu Ina",8,"NO","cat 2 (7-10)"]
+];
+
+const GUESTS = RAW_GUESTS.map(r => ({
+  id:r[0], name:r[1], group:r[2], age:r[3], eligible:r[4]==="YES", cat:r[5]
+}));
+
+const GROUP_COLORS = {
+  "Pak Long":"var(--red)", "Mak Ngah":"var(--orange)", "Pak Lang":"var(--yellow)",
+  "Mak Jang":"var(--lime)", "Mak Ndak":"var(--teal)", "Mak Tam":"var(--cyan)",
+  "Mak Teh":"var(--blue)", "Mak Uda":"var(--indigo)", "Cik Dah":"var(--purple)",
+  "Cu Ina":"var(--pink)"
+};
+const GROUP_ORDER = [...new Set(GUESTS.map(g=>g.group))];
+
+/* ===================== STATE ===================== */
+const state = {
+  checkedIn: new Set(),
+  filterText: "",
+  filterMode: "all",
+  winners: [],        // {num, id, name, group}
+  drawnOutIds: new Set(),
+};
+
+function titleCase(s){
+  return s.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
+}
+
+/* ===================== TABS ===================== */
+document.querySelectorAll("nav.tabs button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    document.getElementById(btn.dataset.view).classList.add("active");
+    if(btn.dataset.view === "dashboard") renderDashboard();
+    if(btn.dataset.view === "luckydraw") renderDrawPool();
+  });
+});
+
+/* ===================== CHECK-IN VIEW ===================== */
+function renderCheckin(){
+  const wrap = document.getElementById("checkinGroups");
+  wrap.innerHTML = "";
+  const q = state.filterText.trim().toLowerCase();
+
+  GROUP_ORDER.forEach(group=>{
+    let members = GUESTS.filter(g=>g.group===group);
+    if(q){
+      members = members.filter(g => g.name.toLowerCase().includes(q) || g.group.toLowerCase().includes(q));
+    }
+    if(state.filterMode==="in") members = members.filter(g=>state.checkedIn.has(g.id));
+    if(state.filterMode==="out") members = members.filter(g=>!state.checkedIn.has(g.id));
+    if(members.length===0) return;
+
+    const total = GUESTS.filter(g=>g.group===group).length;
+    const inCount = GUESTS.filter(g=>g.group===group && state.checkedIn.has(g.id)).length;
+
+    const block = document.createElement("div");
+    block.className = "group-block";
+    block.innerHTML = `
+      <div class="group-head">
+        <span class="group-dot" style="background:${GROUP_COLORS[group]||'#ccc'}"></span>
+        <h3>${group}</h3>
+        <span class="group-progress-pill">${inCount} / ${total} checked in</span>
+      </div>
+      <div class="chip-grid">
+        ${members.map(g=>`
+          <button class="chip ${state.checkedIn.has(g.id)?'done':''}" data-id="${g.id}">
+            <span class="nm">${titleCase(g.name)}</span>
+            <span class="meta">Age ${g.age} · ${g.eligible? '🎁 draw eligible':'—'}</span>
+          </button>
+        `).join("")}
+      </div>
+    `;
+    wrap.appendChild(block);
+  });
+
+  wrap.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      const id = Number(chip.dataset.id);
+      if(state.checkedIn.has(id)) state.checkedIn.delete(id);
+      else state.checkedIn.add(id);
+      renderCheckin();
+      updateHeadCount();
+    });
+  });
+}
+
+document.getElementById("searchBox").addEventListener("input", e=>{
+  state.filterText = e.target.value;
+  renderCheckin();
+});
+document.getElementById("filterSeg").addEventListener("click", e=>{
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  document.querySelectorAll("#filterSeg button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  state.filterMode = btn.dataset.f;
+  renderCheckin();
+});
+
+function updateHeadCount(){
+  document.getElementById("headCount").textContent = `${state.checkedIn.size} / ${GUESTS.length}`;
+}
+
+/* ===================== DASHBOARD VIEW ===================== */
+function renderDashboard(){
+  const statRow = document.getElementById("statRow");
+  const total = GUESTS.length;
+  const inCount = state.checkedIn.size;
+  const pct = total? Math.round((inCount/total)*100) : 0;
+  statRow.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total Guests</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#2f9e44">${inCount}</div><div class="stat-label">Checked In</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#e8590c">${total-inCount}</div><div class="stat-label">Not Yet</div></div>
+    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Attendance</div></div>
+  `;
+
+  const dashGrid = document.getElementById("dashGrid");
+  dashGrid.innerHTML = GROUP_ORDER.map(group=>{
+    const members = GUESTS.filter(g=>g.group===group);
+    const gin = members.filter(g=>state.checkedIn.has(g.id)).length;
+    const gpct = members.length? Math.round((gin/members.length)*100) : 0;
+    return `
+      <div class="card dash-card">
+        <div class="top-line">
+          <span class="group-dot" style="background:${GROUP_COLORS[group]||'#ccc'}"></span>
+          <b>${group}</b>
+        </div>
+        <div class="count">${gin} / ${members.length} checked in (${gpct}%)</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${gpct}%;background:${GROUP_COLORS[group]||'#7048e8'}"></div></div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* ===================== LUCKY DRAW ===================== */
+function getEligiblePool(){
+  const onlyCheckedIn = document.getElementById("onlyCheckedIn").checked;
+  return GUESTS.filter(g=>{
+    if(!g.eligible) return false;
+    if(state.drawnOutIds.has(g.id)) return false;
+    if(onlyCheckedIn && !state.checkedIn.has(g.id)) return false;
+    return true;
+  });
+}
+
+function renderDrawPool(){
+  const pool = getEligiblePool();
+  document.getElementById("poolLine").textContent = `Eligible pool: ${pool.length} guest${pool.length===1?'':'s'}`;
+  document.getElementById("drawBtn").disabled = pool.length===0;
+}
+document.getElementById("onlyCheckedIn").addEventListener("change", renderDrawPool);
+
+function renderWinnersList(){
+  const el = document.getElementById("winnersList");
+  if(state.winners.length===0){
+    el.innerHTML = `<p class="pool-note">No draws yet.</p>`;
+    return;
+  }
+  el.innerHTML = state.winners.slice().reverse().map(w=>`
+    <div class="winner-row">
+      <span class="num">${w.num}</span>
+      <div>
+        <div class="wname">${titleCase(w.name)}</div>
+        <div class="wgroup">${w.group}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+document.getElementById("resetWinnersBtn").addEventListener("click", ()=>{
+  state.winners = [];
+  state.drawnOutIds.clear();
+  renderWinnersList();
+  renderDrawPool();
+});
+
+/* ---- Web Audio sound effects (no external files needed) ---- */
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+function soundEnabled(){ return document.getElementById("soundOn").checked; }
+
+function drumHit(ctx, t, gainVal){
+  const bufferSize = ctx.sampleRate * 0.05;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * (1 - i/bufferSize); }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 1800;
+  const gain = ctx.createGain();
+  gain.gain.value = gainVal;
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start(t);
+
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = 90;
+  const oGain = ctx.createGain();
+  oGain.gain.value = gainVal*0.6;
+  oGain.gain.exponentialRampToValueAtTime(0.001, t+0.09);
+  osc.connect(oGain).connect(ctx.destination);
+  osc.start(t); osc.stop(t+0.1);
+}
+
+let drumTimer = null;
+function startDrumRoll(durationMs){
+  if(!soundEnabled()) return ()=>{};
+  const ctx = getCtx();
+  let elapsed = 0;
+  const totalMs = durationMs;
+  function scheduleNext(){
+    const progress = elapsed/totalMs;
+    const interval = 140 - progress*100; // speeds up toward the end (140ms -> 40ms)
+    drumHit(ctx, ctx.currentTime, 0.22 + progress*0.15);
+    elapsed += interval;
+    if(elapsed < totalMs){
+      drumTimer = setTimeout(scheduleNext, interval);
+    }
+  }
+  scheduleNext();
+  return function stop(){ clearTimeout(drumTimer); };
+}
+
+function playPing(){
+  if(!soundEnabled()) return;
+  const ctx = getCtx();
+  const now = ctx.currentTime;
+  const notes = [880, 1174.66, 1567.98]; // A5, D6, G6 - bright "ta-da" ascend
+  notes.forEach((freq, i)=>{
+    const t = now + i*0.11;
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.value = freq;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.28, t+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t+0.9);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t); osc.stop(t+0.9);
+  });
+}
+
+/* ---- Confetti ---- */
+const confettiCanvas = document.getElementById("confetti-canvas");
+const cctx = confettiCanvas.getContext("2d");
+function resizeCanvas(){ confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+const confettiColors = ["#FF6B6B","#FFA94D","#FFD43B","#94D82D","#20C997","#22B8CF","#4DABF7","#748FFC","#B197FC","#F783AC"];
+let confettiParticles = [];
+function burstConfetti(){
+  for(let i=0;i<160;i++){
+    confettiParticles.push({
+      x: confettiCanvas.width/2 + (Math.random()-0.5)*200,
+      y: confettiCanvas.height*0.25,
+      vx: (Math.random()-0.5)*10,
+      vy: Math.random()*-8 - 4,
+      size: 5+Math.random()*6,
+      color: confettiColors[Math.floor(Math.random()*confettiColors.length)],
+      rot: Math.random()*360,
+      vr: (Math.random()-0.5)*12,
+      life: 0
+    });
+  }
+  if(!confettiRunning) runConfettiLoop();
+}
+let confettiRunning = false;
+function runConfettiLoop(){
+  confettiRunning = true;
+  cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiParticles.forEach(p=>{
+    p.vy += 0.25; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+    cctx.save();
+    cctx.translate(p.x, p.y);
+    cctx.rotate(p.rot*Math.PI/180);
+    cctx.fillStyle = p.color;
+    cctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+    cctx.restore();
+  });
+  confettiParticles = confettiParticles.filter(p=> p.y < confettiCanvas.height+40 && p.life < 400);
+  if(confettiParticles.length>0){
+    requestAnimationFrame(runConfettiLoop);
+  } else {
+    confettiRunning = false;
+    cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  }
+}
+
+/* ---- Draw flow ---- */
+let drawing = false;
+function runDraw(){
+  if(drawing) return;
+  const pool = getEligiblePool();
+  if(pool.length===0){ alert("No eligible guests left to draw from."); return; }
+  drawing = true;
+
+  const winner = pool[Math.floor(Math.random()*pool.length)];
+  const shufflePool = pool; // names to flash through during animation
+
+  document.getElementById("drawBtn").disabled = true;
+  document.getElementById("stageIdle").style.display = "none";
+  document.getElementById("stageWinner").style.display = "none";
+  const shuffleEl = document.getElementById("stageShuffle");
+  shuffleEl.style.display = "block";
+  const nameEl = document.getElementById("shuffleName");
+  const groupEl = document.getElementById("shuffleGroup");
+
+  const DURATION = 4000;
+  const stopDrum = startDrumRoll(DURATION);
+  let shuffleInterval = setInterval(()=>{
+    const r = shufflePool[Math.floor(Math.random()*shufflePool.length)];
+    nameEl.textContent = titleCase(r.name);
+    groupEl.textContent = r.group;
+  }, 70);
+
+  setTimeout(()=>{
+    clearInterval(shuffleInterval);
+    if(stopDrum) stopDrum();
+    shuffleEl.style.display = "none";
+
+    const drawNum = state.winners.length + 1;
+    state.winners.push({num:drawNum, id:winner.id, name:winner.name, group:winner.group});
+    if(document.getElementById("removeAfterWin").checked){
+      state.drawnOutIds.add(winner.id);
+    }
+
+    document.getElementById("drawNumBadge").textContent = `DRAW #${drawNum}`;
+    document.getElementById("winnerName").textContent = titleCase(winner.name);
+    document.getElementById("winnerGroup").textContent = winner.group;
+    document.getElementById("stageWinner").style.display = "block";
+
+    playPing();
+    burstConfetti();
+    renderWinnersList();
+    renderDrawPool();
+    drawing = false;
+  }, DURATION);
+}
+
+document.getElementById("drawBtn").addEventListener("click", runDraw);
+document.getElementById("drawAgainBtn").addEventListener("click", ()=>{
+  document.getElementById("stageWinner").style.display = "none";
+  document.getElementById("stageIdle").style.display = "block";
+  renderDrawPool();
+  runDraw();
+});
+
+/* ---- Fullscreen / present mode ---- */
+document.getElementById("fsBtn").addEventListener("click", ()=>{
+  const stage = document.getElementById("stage");
+  if(!document.fullscreenElement){
+    stage.requestFullscreen?.();
+  } else {
+    document.exitFullscreen?.();
+  }
+});
+
+/* ===================== INIT ===================== */
+renderCheckin();
+updateHeadCount();
+renderDashboard();
+renderDrawPool();
+renderWinnersList();
+</script>
+</body>
+</html>
