@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
     --red:#FF6B6B; --orange:#FFA94D; --yellow:#FFD43B; --lime:#94D82D; --teal:#20C997;
@@ -199,6 +200,15 @@
   .gender-pill.f{background:#ffe9f2;color:#e64980;}
   .cat-bar-track{height:12px;border-radius:999px;background:#f1eefb;overflow:hidden;margin-bottom:12px;display:flex;}
   .cat-bar-seg{height:100%;}
+  .line-lists{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;padding-top:16px;border-top:2px dashed var(--card-line);}
+  @media (max-width:600px){.line-lists{grid-template-columns:1fr;}}
+  .line-col h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;}
+  .line-col ol{margin:0;padding-left:24px;}
+  .line-col li{padding:7px 0;border-bottom:1px solid #f3f0fa;font-weight:800;font-size:14px;}
+  .line-col li:last-child{border-bottom:none;}
+  .line-col li .fam{color:var(--ink-soft);font-weight:600;font-size:12px;}
+  .line-col li.empty{color:#adb5bd;font-weight:600;list-style:none;margin-left:-24px;}
+  .goview-toolbar{display:flex;justify-content:flex-end;margin-bottom:14px;}
 </style>
 </head>
 <body>
@@ -241,6 +251,9 @@
 
   <!-- GAME OVERVIEW VIEW -->
   <section id="gameoverview" class="view">
+    <div class="goview-toolbar">
+      <button class="small-btn" id="exportExcelBtn">⬇️ Export to Excel</button>
+    </div>
     <div class="stat-row" id="gameStatRow"></div>
     <div id="gameCatGroups"></div>
   </section>
@@ -586,6 +599,9 @@ function renderGameOverview(){
       return a.name.localeCompare(b.name);
     });
 
+    const lelakiIn = inMembers.filter(g=>g.gender==="lelaki").slice().sort((a,b)=>a.name.localeCompare(b.name));
+    const perempuanIn = inMembers.filter(g=>g.gender==="perempuan").slice().sort((a,b)=>a.name.localeCompare(b.name));
+
     return `
       <div class="cat-block card">
         <div class="cat-head">
@@ -606,10 +622,54 @@ function renderGameOverview(){
             </div>
           `).join("")}
         </div>
+        <div class="line-lists">
+          <div class="line-col">
+            <h4 class="gender-m">♂ Lelaki checked in (${lelakiIn.length})</h4>
+            <ol>${lelakiIn.length ? lelakiIn.map(g=>`<li>${titleCase(g.name)} <span class="fam">(${g.group})</span></li>`).join("") : '<li class="empty">None checked in yet</li>'}</ol>
+          </div>
+          <div class="line-col">
+            <h4 class="gender-f">♀ Perempuan checked in (${perempuanIn.length})</h4>
+            <ol>${perempuanIn.length ? perempuanIn.map(g=>`<li>${titleCase(g.name)} <span class="fam">(${g.group})</span></li>`).join("") : '<li class="empty">None checked in yet</li>'}</ol>
+          </div>
+        </div>
       </div>
     `;
   }).join("");
 }
+
+function exportGameOverviewToExcel(){
+  if(typeof XLSX === "undefined"){
+    alert("Excel export library did not load (needs internet access). Please check your connection and try again.");
+    return;
+  }
+  const wb = XLSX.utils.book_new();
+
+  const summaryRows = [["Category","Total Guests","Checked In","Check-in %","Lelaki Checked In","Perempuan Checked In"]];
+  CAT_ORDER.forEach(cat=>{
+    const members = GUESTS.filter(g=>g.cat===cat);
+    const inMembers = members.filter(g=>state.checkedIn.has(g.id));
+    const m = inMembers.filter(g=>g.gender==="lelaki").length;
+    const f = inMembers.filter(g=>g.gender==="perempuan").length;
+    const pct = members.length? Math.round((inMembers.length/members.length)*100) : 0;
+    summaryRows.push([cat, members.length, inMembers.length, pct+"%", m, f]);
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryRows), "Overview");
+
+  CAT_ORDER.forEach(cat=>{
+    const members = GUESTS.filter(g=>g.cat===cat && state.checkedIn.has(g.id));
+    const sorted = members.slice().sort((a,b)=>{
+      if(a.gender !== b.gender) return a.gender==="lelaki" ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+    const rows = [["No","Name","Family Group","Gender","Age"]];
+    sorted.forEach((g,i)=> rows.push([i+1, titleCase(g.name), g.group, g.gender==="lelaki"?"Lelaki":"Perempuan", g.age]));
+    const sheetName = cat.split(" (")[0].replace(/[\\/*?\[\]:]/g,"").slice(0,31);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), sheetName);
+  });
+
+  XLSX.writeFile(wb, "Khalijah_Family_Day_2026_GameOverview.xlsx");
+}
+document.getElementById("exportExcelBtn").addEventListener("click", exportGameOverviewToExcel);
 
 /* ===================== LUCKY DRAW ===================== */
 function getEligiblePool(){
