@@ -200,7 +200,7 @@
   .gender-pill.f{background:#ffe9f2;color:#e64980;}
   .cat-bar-track{height:12px;border-radius:999px;background:#f1eefb;overflow:hidden;margin-bottom:12px;display:flex;}
   .cat-bar-seg{height:100%;}
-  .line-lists{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;padding-top:16px;border-top:2px dashed var(--card-line);}
+  .line-lists{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px;}
   @media (max-width:600px){.line-lists{grid-template-columns:1fr;}}
   .line-col h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;}
   .line-col ol{margin:0;padding-left:24px;}
@@ -500,7 +500,7 @@ function renderCheckin(){
         ${members.map(g=>`
           <button class="chip ${state.checkedIn.has(g.id)?'done':''}" data-id="${g.id}">
             <span class="nm">${titleCase(g.name)}</span>
-            <span class="meta"><span class="${genderClass(g.gender)}">${genderIcon(g.gender)}</span> Age ${g.age} · ${g.eligible? '🎁 draw eligible':'—'}</span>
+            <span class="meta"><span class="${genderClass(g.gender)}">${genderIcon(g.gender)}</span>${g.eligible? ' · 🎁 draw eligible':''}</span>
           </button>
         `).join("")}
       </div>
@@ -593,12 +593,6 @@ function renderGameOverview(){
     const mPct = inMembers.length? (catM/inMembers.length)*100 : 0;
     const fPct = inMembers.length? (catF/inMembers.length)*100 : 0;
 
-    const sorted = members.slice().sort((a,b)=>{
-      const aIn = state.checkedIn.has(a.id), bIn = state.checkedIn.has(b.id);
-      if(aIn !== bIn) return aIn ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
-
     const lelakiIn = inMembers.filter(g=>g.gender==="lelaki").slice().sort((a,b)=>a.name.localeCompare(b.name));
     const perempuanIn = inMembers.filter(g=>g.gender==="perempuan").slice().sort((a,b)=>a.name.localeCompare(b.name));
 
@@ -613,14 +607,6 @@ function renderGameOverview(){
         <div class="cat-bar-track">
           <div class="cat-bar-seg" style="width:${mPct}%;background:#4DABF7;"></div>
           <div class="cat-bar-seg" style="width:${fPct}%;background:#F783AC;"></div>
-        </div>
-        <div class="chip-grid">
-          ${sorted.map(g=>`
-            <div class="chip ${state.checkedIn.has(g.id)?'done':''}" style="cursor:default;">
-              <span class="nm">${titleCase(g.name)}</span>
-              <span class="meta"><span class="${genderClass(g.gender)}">${genderIcon(g.gender)}</span> ${g.group}</span>
-            </div>
-          `).join("")}
         </div>
         <div class="line-lists">
           <div class="line-col">
