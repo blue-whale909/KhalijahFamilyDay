@@ -220,7 +220,10 @@
       <div class="brand-badge">🎉</div>
       <h1 class="brand">Khalijah's Family Day 2026<small>Family gathering event system</small></h1>
     </div>
-    <div class="headline-count">✅ Checked in <b id="headCount">0 / 0</b></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="headline-count">✅ Checked in <b id="headCount">0 / 0</b></div>
+      <button class="small-btn" id="resetAllBtn" title="Clear all check-ins and lucky draw history">♻️ Reset All Data</button>
+    </div>
   </div>
 
   <nav class="tabs">
@@ -453,6 +456,40 @@ const state = {
   drawnOutIds: new Set(),
 };
 
+/* ---- persistence: keeps data across page refresh, only cleared by Reset button ---- */
+const STORAGE_KEY = "khalijahFamilyDay2026_v1";
+function persistState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      checkedIn: [...state.checkedIn],
+      winners: state.winners,
+      drawnOutIds: [...state.drawnOutIds]
+    }));
+  }catch(e){ console.warn("Could not save progress locally:", e); }
+}
+function loadPersistedState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    state.checkedIn = new Set(data.checkedIn||[]);
+    state.winners = data.winners||[];
+    state.drawnOutIds = new Set(data.drawnOutIds||[]);
+  }catch(e){ console.warn("Could not load saved progress:", e); }
+}
+function resetAllData(){
+  if(!confirm("This clears ALL check-ins and lucky draw history. Are you sure?")) return;
+  state.checkedIn.clear();
+  state.winners = [];
+  state.drawnOutIds.clear();
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  renderCheckin(); updateHeadCount(); renderDashboard(); renderGameOverview();
+  renderDrawPool(); renderWinnersList();
+  document.getElementById("stageWinner").style.display = "none";
+  document.getElementById("stageIdle").style.display = "block";
+}
+document.getElementById("resetAllBtn").addEventListener("click", resetAllData);
+
 function titleCase(s){
   return s.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
 }
@@ -513,6 +550,7 @@ function renderCheckin(){
       const id = Number(chip.dataset.id);
       if(state.checkedIn.has(id)) state.checkedIn.delete(id);
       else state.checkedIn.add(id);
+      persistState();
       renderCheckin();
       updateHeadCount();
     });
@@ -695,6 +733,7 @@ function renderWinnersList(){
 document.getElementById("resetWinnersBtn").addEventListener("click", ()=>{
   state.winners = [];
   state.drawnOutIds.clear();
+  persistState();
   renderWinnersList();
   renderDrawPool();
 });
@@ -854,6 +893,7 @@ function runDraw(){
     if(document.getElementById("removeAfterWin").checked){
       state.drawnOutIds.add(winner.id);
     }
+    persistState();
 
     document.getElementById("drawNumBadge").textContent = `DRAW #${drawNum}`;
     document.getElementById("winnerName").textContent = titleCase(winner.name);
@@ -887,6 +927,7 @@ document.getElementById("fsBtn").addEventListener("click", ()=>{
 });
 
 /* ===================== INIT ===================== */
+loadPersistedState();
 renderCheckin();
 updateHeadCount();
 renderDashboard();
