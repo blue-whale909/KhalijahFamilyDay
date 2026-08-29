@@ -186,6 +186,19 @@
   #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}
 
   footer{text-align:center;margin-top:30px;font-size:12px;color:var(--ink-soft);font-weight:700;}
+
+  /* ---------- gender + game overview ---------- */
+  .gender-m{color:#1c7ed6;font-weight:800;}
+  .gender-f{color:#e64980;font-weight:800;}
+  .cat-block{margin-bottom:22px;}
+  .cat-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .cat-head h3{margin:0;font-size:18px;font-weight:600;}
+  .cat-pill{font-size:13px;font-weight:800;background:#f4f1fc;color:#5f3dc4;padding:4px 12px;border-radius:999px;}
+  .gender-pill{font-size:13px;font-weight:800;padding:4px 12px;border-radius:999px;}
+  .gender-pill.m{background:#e7f3ff;color:#1c7ed6;}
+  .gender-pill.f{background:#ffe9f2;color:#e64980;}
+  .cat-bar-track{height:12px;border-radius:999px;background:#f1eefb;overflow:hidden;margin-bottom:12px;display:flex;}
+  .cat-bar-seg{height:100%;}
 </style>
 </head>
 <body>
@@ -203,6 +216,7 @@
   <nav class="tabs">
     <button data-view="checkin" class="active">🖊️ Check-In</button>
     <button data-view="dashboard">📊 Dashboard</button>
+    <button data-view="gameoverview">🎮 Game Overview</button>
     <button data-view="luckydraw">🎁 Lucky Draw</button>
   </nav>
 
@@ -223,6 +237,12 @@
   <section id="dashboard" class="view">
     <div class="stat-row" id="statRow"></div>
     <div class="dash-grid" id="dashGrid"></div>
+  </section>
+
+  <!-- GAME OVERVIEW VIEW -->
+  <section id="gameoverview" class="view">
+    <div class="stat-row" id="gameStatRow"></div>
+    <div id="gameCatGroups"></div>
   </section>
 
   <!-- LUCKY DRAW VIEW -->
@@ -282,121 +302,126 @@
 <script>
 /* ===================== DATA ===================== */
 const RAW_GUESTS = [
-[1,"Paklong","Pak Long",75,"YES","cat 5 (36-99)"],
-[2,"Makngah","Mak Ngah",71,"YES","cat 5 (36-99)"],
-[3,"Anisah","Mak Ngah",45,"YES","cat 5 (36-99)"],
-[4,"Awie","Mak Ngah",42,"YES","cat 5 (36-99)"],
-[5,"Iman Sofea","Mak Ngah",14,"NO","cat 3 (11-15)"],
-[6,"Syuhada","Mak Ngah",14,"NO","cat 3 (11-15)"],
-[7,"Ammar","Mak Ngah",12,"NO","cat 3 (11-15)"],
-[8,"Sakinah","Mak Ngah",10,"NO","cat 2 (7-10)"],
-[9,"Jannah","Mak Ngah",6,"NO","cat 1 (1-6)"],
-[10,"Iman","Mak Ngah",4,"NO","cat 1 (1-6)"],
-[11,"Atikah","Mak Ngah",47,"YES","cat 5 (36-99)"],
-[12,"Zolkopli","Mak Ngah",47,"YES","cat 5 (36-99)"],
-[13,"Ain Nurshafiqah","Mak Ngah",22,"YES","cat 4 (16-35)"],
-[14,"Abdul Aziz","Mak Ngah",49,"YES","cat 5 (36-99)"],
-[15,"Azamuddin","Mak Ngah",31,"YES","cat 4 (16-35)"],
-[16,"Solehah","Mak Ngah",31,"YES","cat 4 (16-35)"],
-[17,"Umaira Muslihah","Mak Ngah",7,"NO","cat 2 (7-10)"],
-[18,"Atiah","Mak Ngah",39,"YES","cat 5 (36-99)"],
-[19,"Lan","Mak Ngah",39,"YES","cat 5 (36-99)"],
-[20,"Haziq","Mak Ngah",14,"NO","cat 3 (11-15)"],
-[21,"Sumaiyah","Mak Ngah",8,"NO","cat 2 (7-10)"],
-[22,"Abdullah","Mak Ngah",37,"YES","cat 5 (36-99)"],
-[23,"Aishah Md Desa","Mak Ngah",30,"YES","cat 4 (16-35)"],
-[24,"Aidan","Mak Ngah",8,"NO","cat 2 (7-10)"],
-[25,"Adawiyah","Mak Ngah",6,"NO","cat 1 (1-6)"],
-[26,"Adira","Mak Ngah",2,"NO","cat 1 (1-6)"],
-[27,"Muhammad","Mak Ngah",1,"NO","cat 1 (1-6)"],
-[28,"Adam","Mak Ngah",8,"NO","cat 2 (7-10)"],
-[29,"Azizah","Mak Ngah",35,"YES","cat 4 (16-35)"],
-[30,"Khairul","Mak Ngah",41,"YES","cat 5 (36-99)"],
-[31,"Rahimah","Mak Ngah",35,"YES","cat 4 (16-35)"],
-[32,"Rezqal","Mak Ngah",11,"NO","cat 3 (11-15)"],
-[33,"Khaira","Mak Ngah",7,"NO","cat 2 (7-10)"],
-[34,"Azizul","Mak Ngah",32,"YES","cat 4 (16-35)"],
-[35,"Srihandayani","Mak Ngah",32,"YES","cat 4 (16-35)"],
-[36,"Aisy","Mak Ngah",3,"NO","cat 1 (1-6)"],
-[37,"Ayyash","Mak Ngah",1,"NO","cat 1 (1-6)"],
-[38,"Adli","Pak Lang",39,"YES","cat 5 (36-99)"],
-[39,"Farah","Pak Lang",39,"YES","cat 5 (36-99)"],
-[40,"Hurun","Pak Lang",11,"NO","cat 3 (11-15)"],
-[41,"Uwais","Pak Lang",10,"NO","cat 2 (7-10)"],
-[42,"Zinnirah","Pak Lang",5,"NO","cat 1 (1-6)"],
-[43,"Anis","Pak Lang",35,"YES","cat 4 (16-35)"],
-[44,"Lah","Pak Lang",35,"YES","cat 4 (16-35)"],
-[45,"Mikail","Pak Lang",8,"NO","cat 2 (7-10)"],
-[46,"Anas","Pak Lang",33,"YES","cat 4 (16-35)"],
-[47,"Syafiqah","Pak Lang",33,"YES","cat 4 (16-35)"],
-[48,"Rumaisha","Pak Lang",6,"NO","cat 1 (1-6)"],
-[49,"Tasneem","Pak Lang",3,"NO","cat 1 (1-6)"],
-[50,"Azieman","Pak Lang",25,"YES","cat 4 (16-35)"],
-[51,"Makjang","Mak Jang",69,"YES","cat 5 (36-99)"],
-[52,"Zan","Mak Jang",50,"YES","cat 5 (36-99)"],
-[53,"Aziah","Mak Jang",47,"YES","cat 5 (36-99)"],
-[54,"Ahmad","Mak Jang",23,"YES","cat 4 (16-35)"],
-[55,"Jiha","Mak Jang",22,"YES","cat 4 (16-35)"],
-[56,"Wafi","Mak Jang",21,"YES","cat 4 (16-35)"],
-[57,"Nazifa","Mak Jang",17,"NO","cat 4 (16-35)"],
-[58,"Aina","Mak Jang",15,"NO","cat 3 (11-15)"],
-[59,"Din","Mak Jang",14,"NO","cat 3 (11-15)"],
-[60,"Syukri","Mak Jang",45,"YES","cat 5 (36-99)"],
-[61,"Munirah","Mak Jang",45,"YES","cat 5 (36-99)"],
-[62,"Huda","Mak Jang",11,"NO","cat 3 (11-15)"],
-[63,"Humaira","Mak Jang",10,"NO","cat 2 (7-10)"],
-[64,"Hafiya","Mak Jang",6,"NO","cat 1 (1-6)"],
-[65,"Sayukhi","Mak Ndak",66,"YES","cat 5 (36-99)"],
-[66,"Nooraini","Mak Ndak",66,"YES","cat 5 (36-99)"],
-[67,"Mimi","Mak Ndak",31,"YES","cat 4 (16-35)"],
-[68,"Mira","Mak Ndak",28,"YES","cat 4 (16-35)"],
-[69,"Arif","Mak Ndak",35,"YES","cat 4 (16-35)"],
-[70,"Paktam","Mak Tam",71,"YES","cat 5 (36-99)"],
-[71,"Maktam","Mak Tam",65,"YES","cat 5 (36-99)"],
-[72,"Husna","Mak Tam",42,"YES","cat 5 (36-99)"],
-[73,"Shahrul","Mak Tam",42,"YES","cat 5 (36-99)"],
-[74,"Hayfa","Mak Tam",13,"NO","cat 3 (11-15)"],
-[75,"Huda","Mak Tam",39,"YES","cat 5 (36-99)"],
-[76,"Akmal Khan","Mak Tam",39,"YES","cat 5 (36-99)"],
-[77,"Hanim","Mak Tam",35,"YES","cat 4 (16-35)"],
-[78,"Syazwan","Mak Tam",39,"YES","cat 5 (36-99)"],
-[79,"Adib","Mak Tam",31,"YES","cat 4 (16-35)"],
-[80,"Nisya","Mak Tam",26,"YES","cat 4 (16-35)"],
-[81,"Makteh","Mak Teh",64,"YES","cat 5 (36-99)"],
-[82,"Khairunisa","Mak Teh",34,"YES","cat 4 (16-35)"],
-[83,"Khaled","Mak Teh",34,"YES","cat 4 (16-35)"],
-[84,"Lily","Mak Teh",7,"NO","cat 2 (7-10)"],
-[85,"Luna","Mak Teh",3,"NO","cat 1 (1-6)"],
-[86,"Walid","Mak Teh",33,"YES","cat 4 (16-35)"],
-[87,"Hakim","Mak Teh",30,"YES","cat 4 (16-35)"],
-[88,"Nuar","Mak Teh",27,"YES","cat 4 (16-35)"],
-[89,"Alia","Mak Teh",28,"YES","cat 4 (16-35)"],
-[90,"Helena","Mak Teh",1,"NO","cat 1 (1-6)"],
-[91,"Ikhwan","Mak Teh",26,"YES","cat 4 (16-35)"],
-[92,"Mak Uda","Mak Uda",59,"YES","cat 5 (36-99)"],
-[93,"Pak Uda","Mak Uda",71,"YES","cat 5 (36-99)"],
-[94,"Ain Syazwani","Mak Uda",29,"YES","cat 4 (16-35)"],
-[95,"Dena","Cik Dah",29,"YES","cat 4 (16-35)"],
-[96,"Ikmal","Cik Dah",29,"YES","cat 4 (16-35)"],
-[97,"Anaqi","Cik Dah",3,"NO","cat 1 (1-6)"],
-[98,"Aisyah","Cik Dah",28,"YES","cat 4 (16-35)"],
-[99,"Cikmat","Cik Dah",58,"YES","cat 5 (36-99)"],
-[100,"Cikdah","Cik Dah",57,"YES","cat 5 (36-99)"],
-[101,"Fatimah","Cik Dah",25,"YES","cat 4 (16-35)"],
-[102,"Hasbur","Cik Dah",18,"YES","cat 4 (16-35)"],
-[103,"Pak Usu","Cu Ina",50,"YES","cat 5 (36-99)"],
-[104,"Cu","Cu Ina",54,"YES","cat 5 (36-99)"],
-[105,"Izzati","Cu Ina",29,"YES","cat 4 (16-35)"],
-[106,"Aisy","Cu Ina",3,"NO","cat 1 (1-6)"],
-[107,"Sofea","Cu Ina",25,"YES","cat 4 (16-35)"],
-[108,"Iesya","Cu Ina",23,"YES","cat 4 (16-35)"],
-[109,"Man","Cu Ina",22,"YES","cat 4 (16-35)"],
-[110,"Dhuha","Cu Ina",8,"NO","cat 2 (7-10)"]
+[1,"Paklong","Pak Long",75,"lelaki","YES","cat 5 (36-99)"],
+[2,"Makngah","Mak Ngah",71,"perempuan","YES","cat 5 (36-99)"],
+[3,"Anisah","Mak Ngah",45,"perempuan","YES","cat 5 (36-99)"],
+[4,"Awie","Mak Ngah",42,"perempuan","YES","cat 5 (36-99)"],
+[5,"Iman Sofea","Mak Ngah",14,"perempuan","NO","cat 3 (11-15)"],
+[6,"Syuhada","Mak Ngah",14,"perempuan","NO","cat 3 (11-15)"],
+[7,"Ammar","Mak Ngah",12,"lelaki","NO","cat 3 (11-15)"],
+[8,"Sakinah","Mak Ngah",10,"perempuan","NO","cat 2 (7-10)"],
+[9,"Jannah","Mak Ngah",6,"perempuan","NO","cat 1 (1-6)"],
+[10,"Iman","Mak Ngah",4,"lelaki","NO","cat 1 (1-6)"],
+[11,"Atikah","Mak Ngah",47,"perempuan","YES","cat 5 (36-99)"],
+[12,"Zolkopli","Mak Ngah",47,"lelaki","YES","cat 5 (36-99)"],
+[13,"Ain Nurshafiqah","Mak Ngah",22,"perempuan","YES","cat 4 (16-35)"],
+[14,"Abdul Aziz","Mak Ngah",49,"lelaki","YES","cat 5 (36-99)"],
+[15,"Azamuddin","Mak Ngah",31,"lelaki","YES","cat 4 (16-35)"],
+[16,"Solehah","Mak Ngah",31,"perempuan","YES","cat 4 (16-35)"],
+[17,"Umaira Muslihah","Mak Ngah",7,"perempuan","NO","cat 2 (7-10)"],
+[18,"Atiah","Mak Ngah",39,"perempuan","YES","cat 5 (36-99)"],
+[19,"Lan","Mak Ngah",39,"lelaki","YES","cat 5 (36-99)"],
+[20,"Haziq","Mak Ngah",14,"lelaki","NO","cat 3 (11-15)"],
+[21,"Sumaiyah","Mak Ngah",8,"perempuan","NO","cat 2 (7-10)"],
+[22,"Abdullah","Mak Ngah",37,"lelaki","YES","cat 5 (36-99)"],
+[23,"Aishah Md Desa","Mak Ngah",30,"perempuan","YES","cat 4 (16-35)"],
+[24,"Aidan","Mak Ngah",8,"lelaki","NO","cat 2 (7-10)"],
+[25,"Adawiyah","Mak Ngah",6,"perempuan","NO","cat 1 (1-6)"],
+[26,"Adira","Mak Ngah",2,"perempuan","NO","cat 1 (1-6)"],
+[27,"Muhammad","Mak Ngah",1,"lelaki","NO","cat 1 (1-6)"],
+[28,"Adam","Mak Ngah",8,"lelaki","NO","cat 2 (7-10)"],
+[29,"Azizah","Mak Ngah",35,"perempuan","YES","cat 4 (16-35)"],
+[30,"Khairul","Mak Ngah",41,"lelaki","YES","cat 5 (36-99)"],
+[31,"Rahimah","Mak Ngah",35,"perempuan","YES","cat 4 (16-35)"],
+[32,"Rezqal","Mak Ngah",11,"lelaki","NO","cat 3 (11-15)"],
+[33,"Khaira","Mak Ngah",7,"perempuan","NO","cat 2 (7-10)"],
+[34,"Azizul","Mak Ngah",32,"lelaki","YES","cat 4 (16-35)"],
+[35,"Srihandayani","Mak Ngah",32,"perempuan","YES","cat 4 (16-35)"],
+[36,"Aisy","Mak Ngah",3,"lelaki","NO","cat 1 (1-6)"],
+[37,"Ayyash","Mak Ngah",1,"lelaki","NO","cat 1 (1-6)"],
+[38,"Adli","Pak Lang",39,"lelaki","YES","cat 5 (36-99)"],
+[39,"Farah","Pak Lang",39,"perempuan","YES","cat 5 (36-99)"],
+[40,"Hurun","Pak Lang",11,"perempuan","NO","cat 3 (11-15)"],
+[41,"Uwais","Pak Lang",10,"lelaki","NO","cat 2 (7-10)"],
+[42,"Zinnirah","Pak Lang",5,"perempuan","NO","cat 1 (1-6)"],
+[43,"Anis","Pak Lang",35,"perempuan","YES","cat 4 (16-35)"],
+[44,"Lah","Pak Lang",35,"lelaki","YES","cat 4 (16-35)"],
+[45,"Mikail","Pak Lang",8,"lelaki","NO","cat 2 (7-10)"],
+[46,"Anas","Pak Lang",33,"lelaki","YES","cat 4 (16-35)"],
+[47,"Syafiqah","Pak Lang",33,"perempuan","YES","cat 4 (16-35)"],
+[48,"Rumaisha","Pak Lang",6,"perempuan","NO","cat 1 (1-6)"],
+[49,"Tasneem","Pak Lang",3,"perempuan","NO","cat 1 (1-6)"],
+[50,"Azieman","Pak Lang",25,"lelaki","YES","cat 4 (16-35)"],
+[51,"Makjang","Mak Jang",69,"perempuan","YES","cat 5 (36-99)"],
+[52,"Zan","Mak Jang",50,"lelaki","YES","cat 5 (36-99)"],
+[53,"Aziah","Mak Jang",47,"perempuan","YES","cat 5 (36-99)"],
+[54,"Ahmad","Mak Jang",23,"lelaki","YES","cat 4 (16-35)"],
+[55,"Jiha","Mak Jang",22,"perempuan","YES","cat 4 (16-35)"],
+[56,"Wafi","Mak Jang",21,"lelaki","YES","cat 4 (16-35)"],
+[57,"Nazifa","Mak Jang",17,"perempuan","NO","cat 4 (16-35)"],
+[58,"Aina","Mak Jang",15,"perempuan","NO","cat 3 (11-15)"],
+[59,"Din","Mak Jang",14,"lelaki","NO","cat 3 (11-15)"],
+[60,"Syukri","Mak Jang",45,"lelaki","YES","cat 5 (36-99)"],
+[61,"Munirah","Mak Jang",45,"perempuan","YES","cat 5 (36-99)"],
+[62,"Huda","Mak Jang",11,"perempuan","NO","cat 3 (11-15)"],
+[63,"Humaira","Mak Jang",10,"perempuan","NO","cat 2 (7-10)"],
+[64,"Hafiya","Mak Jang",6,"perempuan","NO","cat 1 (1-6)"],
+[65,"Sayukhi","Mak Ndak",66,"lelaki","YES","cat 5 (36-99)"],
+[66,"Nooraini","Mak Ndak",66,"perempuan","YES","cat 5 (36-99)"],
+[67,"Mimi","Mak Ndak",31,"perempuan","YES","cat 4 (16-35)"],
+[68,"Mira","Mak Ndak",28,"perempuan","YES","cat 4 (16-35)"],
+[69,"Arif","Mak Ndak",35,"lelaki","YES","cat 4 (16-35)"],
+[70,"Paktam","Mak Tam",71,"lelaki","YES","cat 5 (36-99)"],
+[71,"Maktam","Mak Tam",65,"perempuan","YES","cat 5 (36-99)"],
+[72,"Husna","Mak Tam",42,"perempuan","YES","cat 5 (36-99)"],
+[73,"Shahrul","Mak Tam",42,"lelaki","YES","cat 5 (36-99)"],
+[74,"Hayfa","Mak Tam",13,"perempuan","NO","cat 3 (11-15)"],
+[75,"Huda","Mak Tam",39,"perempuan","YES","cat 5 (36-99)"],
+[76,"Akmal Khan","Mak Tam",39,"lelaki","YES","cat 5 (36-99)"],
+[77,"Hanim","Mak Tam",35,"perempuan","YES","cat 4 (16-35)"],
+[78,"Syazwan","Mak Tam",39,"lelaki","YES","cat 5 (36-99)"],
+[79,"Adib","Mak Tam",31,"lelaki","YES","cat 4 (16-35)"],
+[80,"Nisya","Mak Tam",26,"perempuan","YES","cat 4 (16-35)"],
+[81,"Makteh","Mak Teh",64,"perempuan","YES","cat 5 (36-99)"],
+[82,"Khairunisa","Mak Teh",34,"perempuan","YES","cat 4 (16-35)"],
+[83,"Khaled","Mak Teh",34,"lelaki","YES","cat 4 (16-35)"],
+[84,"Lily","Mak Teh",7,"perempuan","NO","cat 2 (7-10)"],
+[85,"Luna","Mak Teh",3,"perempuan","NO","cat 1 (1-6)"],
+[86,"Walid","Mak Teh",33,"lelaki","YES","cat 4 (16-35)"],
+[87,"Hakim","Mak Teh",30,"lelaki","YES","cat 4 (16-35)"],
+[88,"Nuar","Mak Teh",27,"lelaki","YES","cat 4 (16-35)"],
+[89,"Alia","Mak Teh",28,"perempuan","YES","cat 4 (16-35)"],
+[90,"Helena","Mak Teh",1,"perempuan","NO","cat 1 (1-6)"],
+[91,"Ikhwan","Mak Teh",26,"lelaki","YES","cat 4 (16-35)"],
+[92,"Mak Uda","Mak Uda",59,"perempuan","YES","cat 5 (36-99)"],
+[93,"Pak Uda","Mak Uda",71,"lelaki","YES","cat 5 (36-99)"],
+[94,"Ain Syazwani","Mak Uda",29,"perempuan","YES","cat 4 (16-35)"],
+[95,"Dena","Cik Dah",29,"perempuan","YES","cat 4 (16-35)"],
+[96,"Ikmal","Cik Dah",29,"lelaki","YES","cat 4 (16-35)"],
+[97,"Anaqi","Cik Dah",3,"lelaki","NO","cat 1 (1-6)"],
+[98,"Aisyah","Cik Dah",28,"perempuan","YES","cat 4 (16-35)"],
+[99,"Cikmat","Cik Dah",58,"lelaki","YES","cat 5 (36-99)"],
+[100,"Cikdah","Cik Dah",57,"perempuan","YES","cat 5 (36-99)"],
+[101,"Fatimah","Cik Dah",25,"perempuan","YES","cat 4 (16-35)"],
+[102,"Hasbur","Cik Dah",18,"lelaki","YES","cat 4 (16-35)"],
+[103,"Pak Usu","Cu Ina",50,"lelaki","YES","cat 5 (36-99)"],
+[104,"Cu","Cu Ina",54,"perempuan","YES","cat 5 (36-99)"],
+[105,"Izzati","Cu Ina",29,"perempuan","YES","cat 4 (16-35)"],
+[106,"Aisy","Cu Ina",3,"lelaki","NO","cat 1 (1-6)"],
+[107,"Sofea","Cu Ina",25,"perempuan","YES","cat 4 (16-35)"],
+[108,"Iesya","Cu Ina",23,"perempuan","YES","cat 4 (16-35)"],
+[109,"Man","Cu Ina",22,"lelaki","YES","cat 4 (16-35)"],
+[110,"Dhuha","Cu Ina",8,"perempuan","NO","cat 2 (7-10)"]
 ];
 
 const GUESTS = RAW_GUESTS.map(r => ({
-  id:r[0], name:r[1], group:r[2], age:r[3], eligible:r[4]==="YES", cat:r[5]
+  id:r[0], name:r[1], group:r[2], age:r[3], gender:r[4], eligible:r[5]==="YES", cat:r[6]
 }));
+
+const CAT_ORDER = ["cat 1 (1-6)","cat 2 (7-10)","cat 3 (11-15)","cat 4 (16-35)","cat 5 (36-99)"];
+function genderIcon(g){ return g==="lelaki" ? "♂" : "♀"; }
+function genderClass(g){ return g==="lelaki" ? "gender-m" : "gender-f"; }
+function genderLabel(g){ return g==="lelaki" ? "L" : "P"; }
 
 const GROUP_COLORS = {
   "Pak Long":"var(--red)", "Mak Ngah":"var(--orange)", "Pak Lang":"var(--yellow)",
@@ -427,6 +452,7 @@ document.querySelectorAll("nav.tabs button").forEach(btn=>{
     document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
     document.getElementById(btn.dataset.view).classList.add("active");
     if(btn.dataset.view === "dashboard") renderDashboard();
+    if(btn.dataset.view === "gameoverview") renderGameOverview();
     if(btn.dataset.view === "luckydraw") renderDrawPool();
   });
 });
@@ -461,7 +487,7 @@ function renderCheckin(){
         ${members.map(g=>`
           <button class="chip ${state.checkedIn.has(g.id)?'done':''}" data-id="${g.id}">
             <span class="nm">${titleCase(g.name)}</span>
-            <span class="meta">Age ${g.age} · ${g.eligible? '🎁 draw eligible':'—'}</span>
+            <span class="meta"><span class="${genderClass(g.gender)}">${genderIcon(g.gender)}</span> Age ${g.age} · ${g.eligible? '🎁 draw eligible':'—'}</span>
           </button>
         `).join("")}
       </div>
@@ -523,6 +549,63 @@ function renderDashboard(){
         </div>
         <div class="count">${gin} / ${members.length} checked in (${gpct}%)</div>
         <div class="bar-track"><div class="bar-fill" style="width:${gpct}%;background:${GROUP_COLORS[group]||'#7048e8'}"></div></div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* ===================== GAME OVERVIEW ===================== */
+function renderGameOverview(){
+  const total = GUESTS.length;
+  const inCount = state.checkedIn.size;
+  const checkedInGuests = GUESTS.filter(g=>state.checkedIn.has(g.id));
+  const mCount = checkedInGuests.filter(g=>g.gender==="lelaki").length;
+  const fCount = checkedInGuests.filter(g=>g.gender==="perempuan").length;
+
+  const statRow = document.getElementById("gameStatRow");
+  statRow.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${inCount}</div><div class="stat-label">Checked In (Game Pool)</div></div>
+    <div class="stat-card"><div class="stat-num gender-m">${mCount}</div><div class="stat-label">♂ Lelaki Checked In</div></div>
+    <div class="stat-card"><div class="stat-num gender-f">${fCount}</div><div class="stat-label">♀ Perempuan Checked In</div></div>
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Game Categories</div></div>
+  `;
+
+  const wrap = document.getElementById("gameCatGroups");
+  wrap.innerHTML = CAT_ORDER.map(cat=>{
+    const members = GUESTS.filter(g=>g.cat===cat);
+    const inMembers = members.filter(g=>state.checkedIn.has(g.id));
+    const catM = inMembers.filter(g=>g.gender==="lelaki").length;
+    const catF = inMembers.filter(g=>g.gender==="perempuan").length;
+    const pct = members.length? Math.round((inMembers.length/members.length)*100) : 0;
+    const mPct = inMembers.length? (catM/inMembers.length)*100 : 0;
+    const fPct = inMembers.length? (catF/inMembers.length)*100 : 0;
+
+    const sorted = members.slice().sort((a,b)=>{
+      const aIn = state.checkedIn.has(a.id), bIn = state.checkedIn.has(b.id);
+      if(aIn !== bIn) return aIn ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    return `
+      <div class="cat-block card">
+        <div class="cat-head">
+          <h3>${cat}</h3>
+          <span class="cat-pill">${inMembers.length} / ${members.length} checked in (${pct}%)</span>
+          <span class="gender-pill m">♂ ${catM} lelaki</span>
+          <span class="gender-pill f">♀ ${catF} perempuan</span>
+        </div>
+        <div class="cat-bar-track">
+          <div class="cat-bar-seg" style="width:${mPct}%;background:#4DABF7;"></div>
+          <div class="cat-bar-seg" style="width:${fPct}%;background:#F783AC;"></div>
+        </div>
+        <div class="chip-grid">
+          ${sorted.map(g=>`
+            <div class="chip ${state.checkedIn.has(g.id)?'done':''}" style="cursor:default;">
+              <span class="nm">${titleCase(g.name)}</span>
+              <span class="meta"><span class="${genderClass(g.gender)}">${genderIcon(g.gender)}</span> ${g.group}</span>
+            </div>
+          `).join("")}
+        </div>
       </div>
     `;
   }).join("");
@@ -761,6 +844,7 @@ document.getElementById("fsBtn").addEventListener("click", ()=>{
 renderCheckin();
 updateHeadCount();
 renderDashboard();
+renderGameOverview();
 renderDrawPool();
 renderWinnersList();
 </script>
